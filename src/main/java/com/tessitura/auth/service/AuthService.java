@@ -13,7 +13,6 @@ import com.tessitura.auth.exception.UnauthorizedException;
 import com.tessitura.auth.exception.UserAlreadyExistsException;
 import com.tessitura.auth.model.LoginAudit;
 import com.tessitura.auth.model.User;
-import com.tessitura.auth.repository.LoginAuditRepository;
 import com.tessitura.auth.repository.UserRepository;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -25,14 +24,14 @@ public class AuthService {
     private static final String DUMMY_HASH = "$2a$10$W9XmPlWyLJy9KQTT/ml03eAzi3Z8Q2Hp0Ikgw/3ASzmE9It0xPZvy";
 
     private final UserRepository userRepository;
-    private final LoginAuditRepository loginAuditRepository;
+    private final LoginAuditService loginAuditService;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
 
-    public AuthService(UserRepository userRepository, LoginAuditRepository loginAuditRepository,
+    public AuthService(UserRepository userRepository, LoginAuditService loginAuditService,
             PasswordEncoder passwordEncoder, JwtService jwtService) {
         this.userRepository = userRepository;
-        this.loginAuditRepository = loginAuditRepository;
+        this.loginAuditService = loginAuditService;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
     }
@@ -109,6 +108,6 @@ public class AuthService {
         audit.setUserAgent(userAgent);
         audit.setSuccess(success);
         audit.setReason(reason);
-        loginAuditRepository.save(audit);
+        loginAuditService.save(audit);
     }
 }
